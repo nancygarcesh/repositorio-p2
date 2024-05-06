@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using NewAppVS.Middleware;
 using Serilog;
 using UPB.BusinessLogic.Managers;
 
@@ -57,6 +58,7 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "QA")
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseErrorLogging();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

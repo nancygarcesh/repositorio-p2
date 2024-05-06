@@ -39,23 +39,60 @@ namespace NewAppVS.Controllers
 
         // POST api/<PatientController>
         [HttpPost]
-        public void Post([FromBody] Patient value)
+        public IActionResult Post([FromBody] Patient value)
         {
-            _patientManager.CreatePatient(value);
+            try
+            {
+                _patientManager.CreatePatient(value);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred while creating a patient.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         // PUT:api/<PatientController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Patient value)
+        public IActionResult Put(int id, [FromBody] Patient value)
         {
-            _patientManager.UpdatePatient(id, value);
+            try
+            {
+                _patientManager.UpdatePatient(id, value);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Log.Error(ex, $"Patient with ID {id} not found.");
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred while updating a patient.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         // DELETE:api/<PatientController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _patientManager.DeletePatient(id);
+            try
+            {
+                _patientManager.DeletePatient(id);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Log.Error(ex, $"Patient with ID {id} not found.");
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred while deleting a patient.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
     }
 }
