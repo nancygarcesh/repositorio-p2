@@ -16,46 +16,46 @@ namespace NewAppVS.Controllers
 
         // Constructor
         private PatientManager _patientManager;
-        public PatientController(PatientManager studentManager)
+        public PatientController(PatientManager patientManager)
         {
-            _patientManager = studentManager;
+            _patientManager = patientManager;
         }
 
-        // GET; api/<StudentController>
+        // GET; api/<PatientController>
         [HttpGet]
         public List<Patient> Get()
         {
-            Log.Information("Initialize Stud3entController");
+            Log.Information("Initialize Pati3ntController");
             return _patientManager.GetAll();
         }
 
-        // GET: api/<StudentController>/5
+        // GET: api/<PatientController>/5
         [HttpGet]
         [Route("{id}")]
         public Patient Get(int id)
         {
-            return _patientManager.GetStudentById(id);
+            return _patientManager.GetPatientById(id);
         }
 
-        // POST api/<StudentController>
+        // POST api/<PatientController>
         [HttpPost]
         public void Post([FromBody] Patient value)
         {
-            _patientManager.CreateStudent(value);
+            _patientManager.CreatePatient(value);
         }
 
-        // PUT:api/<StudentController>/5
+        // PUT:api/<PatientController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Patient value)
         {
-            _patientManager.UpdateStudent(id, value);
+            _patientManager.UpdatePatient(id, value);
         }
 
-        // DELETE:api/<StudentController>/5
+        // DELETE:api/<PatientController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _patientManager.DeleteStudent(id);
+            _patientManager.DeletePatient(id);
         }
     }
 }

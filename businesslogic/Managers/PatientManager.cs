@@ -18,22 +18,22 @@ namespace UPB.BusinessLogic.Managers
             _patients = new List<Patient>();
             _patients.Add(new Patient()
             {
-                Name = "Maria",
+                Name = "Nancy",
                 Code = "20087",
                 Id = 1
             });
 
-            Patient student = new Patient()
+            Patient patient = new Patient()
             {
-                Name = "Jose",
-                Code = "200337",
+                Name = "Elizabeth",
+                Code = "201137",
                 Id = 2
             };
 
-            Patient student2 = new Patient()
+            Patient patient2 = new Patient()
             {
-                Name = "Pepe",
-                Code = "300556",
+                Name = "Emma",
+                Code = "110556",
                 Id = 3
             };
         }
@@ -44,34 +44,55 @@ namespace UPB.BusinessLogic.Managers
             return _patients;
         }
 
-        public Patient GetStudentById(int id)
+        public Patient GetPatientById(int id)
         {
-            Patient foundStudent = _patients.Find(x => x.Id == id);
-            return foundStudent;
+            Patient foundPatient = _patients.Find(x => x.Id == id);
+            return foundPatient;
         }
 
-        public Patient CreateStudent(Patient student)
+        public Patient CreatePatient(Patient student)
         {
-            Patient createdStudent = new Patient()
+            Patient createdPatient = new Patient()
             {
                 Name = student.Name,
                 Code = student.Code,
                 Id = student.Id
             };
-            _patients.Add(createdStudent);
-            return createdStudent;
+            _patients.Add(createdPatient);
+            return createdPatient;
         }
 
-        public Patient UpdateStudent(int id, Patient studentToUpdate)
+        public Patient UpdatePatient(int id, Patient patientToUpdate)
         {
-            // logica de buscar y actualizar
-            throw new NotImplementedException();
+            Patient existingPatient = _patients.FirstOrDefault(p => p.Id == id);
+            if (existingPatient != null)
+            {
+                existingPatient.Name = patientToUpdate.Name;
+                existingPatient.Code = patientToUpdate.Code;
+
+
+                return existingPatient;
+            }
+            else
+            {
+
+                throw new KeyNotFoundException($"Patient with ID {id} not found.");
+            }
         }
 
-        public Patient DeleteStudent(int studentIdToDelete)
+        public Patient DeletePatient(int patientIdToDelete)
         {
-            // logica  de buscar y borrar
-            throw new NotImplementedException();
+            Patient patientToRemove = _patients.FirstOrDefault(p => p.Id == patientIdToDelete);
+            if (patientToRemove != null)
+            {
+                _patients.Remove(patientToRemove);
+                return patientToRemove;
+            }
+            else
+            {
+
+                throw new KeyNotFoundException($"Patient with ID {patientIdToDelete} not found.");
+            }
         }
     }
 }
