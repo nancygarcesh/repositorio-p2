@@ -19,8 +19,10 @@ namespace UPB.BusinessLogic.Managers
         public PatientManager(IConfiguration configuration, HttpClient httpClient)
         {
             _patients = new List<Patient>();
+            leerArchivo();
             _configuration = configuration;
             _httpClient = httpClient;
+            
         }
 
         public List<Patient> GetAll()
@@ -46,7 +48,7 @@ namespace UPB.BusinessLogic.Managers
 
             // Agregamos el paciente a la lista
             _patients.Add(patient);
-
+            escribirArchivo();
             // Retornamos el paciente creado
             return patient;
         }
@@ -78,6 +80,7 @@ namespace UPB.BusinessLogic.Managers
                 // Deserializamos la respuesta para obtener el código de paciente
                 var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { PatientCode = "" });
 
+
                 // Retornamos el código de paciente generado
                 return responseObject.PatientCode;
             }
@@ -95,6 +98,7 @@ namespace UPB.BusinessLogic.Managers
             {
                 existingPatient.Name = patientToUpdate.Name;
                 existingPatient.Code = patientToUpdate.Code;
+                escribirArchivo();
                 return existingPatient;
             }
             else
@@ -109,6 +113,7 @@ namespace UPB.BusinessLogic.Managers
             if (patientToRemove != null)
             {
                 _patients.Remove(patientToRemove);
+                escribirArchivo();
                 return patientToRemove;
             }
             else
@@ -116,5 +121,91 @@ namespace UPB.BusinessLogic.Managers
                 throw new KeyNotFoundException($"Patient with code {patientCodeToDelete} not found.");
             }
         }
+
+
+
+        public void leerArchivo()
+        {
+            // Ruta del archivo a leer
+            string rutaArchivo = "C://Users//hp//Documents//QUINTO_SEMESTRE//CERTIFICACION__I//repositorio-p2//Patients.txt";
+
+            try
+            {
+                // Verificamos si el archivo existe
+                if (File.Exists(rutaArchivo))
+                {
+                    // Usamos StreamReader para leer el archivo línea por línea
+                    using (StreamReader lector = new StreamReader(rutaArchivo))
+                    {
+                        string linea;
+                        while ((linea = lector.ReadLine()) != null)
+                        {
+                            // Dividimos la línea en sus datos separados por comas
+                            string[] datos = linea.Split(",");
+
+                            // Verificamos que hay suficientes datos para crear un paciente
+                            if (datos.Length >= 4)
+                            {
+                                // Creamos un nuevo paciente con los datos de la línea
+                                Patient paciente = new Patient
+                                {
+                                    Name = datos[0].Trim(), // Eliminamos los espacios alrededor del nombre
+                                    LastName = datos[1].Trim(),
+                                    CI = datos[2].Trim(),
+                                    Code = datos[3].Trim()
+                                };
+
+                                _patients.Add(paciente);
+                            }
+                            else
+                            {
+                                Console.WriteLine("La línea no tiene suficientes datos para crear un paciente.");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El archivo no existe.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                Console.WriteLine("Ocurrió un error al leer el archivo: " + ex.Message);
+            }
+        }
+
+
+        public void escribirArchivo()
+        {
+            // Ruta del archivo donde se escribirán los datos
+            string rutaArchivo = "C://Users//hp//Documents//QUINTO_SEMESTRE//CERTIFICACION__I//repositorio-p2//Patients.txt";
+
+            try
+            {
+                // Usamos StreamWriter para escribir en el archivo
+                using (StreamWriter escritor = new StreamWriter(rutaArchivo))
+                {
+                    // Iteramos sobre cada paciente en la lista _patients
+                    foreach (Patient paciente in _patients)
+                    {
+                        // Creamos una línea con los datos del paciente separados por comas
+                        string linea = $"{paciente.Name},{paciente.LastName},{paciente.CI},{paciente.Code}";
+
+                        // Escribimos la línea en el archivo
+                        escritor.WriteLine(linea);
+                    }
+                }
+
+                Console.WriteLine("Se han escrito los datos en el archivo correctamente.");
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                Console.WriteLine("Ocurrió un error al escribir en el archivo: " + ex.Message);
+            }
+        }
+
     }
 }
