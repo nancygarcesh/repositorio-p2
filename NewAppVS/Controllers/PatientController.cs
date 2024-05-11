@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 using UPB.BusinessLogic.Models;
 using UPB.BusinessLogic.Managers;
 using Serilog;
+using System.Text;
+using Newtonsoft.Json;
 
 
 namespace NewAppVS.Controllers
@@ -32,9 +35,9 @@ namespace NewAppVS.Controllers
         // GET: api/<PatientController>/5
         [HttpGet]
         [Route("{id}")]
-        public Patient Get(int id)
+        public Patient Get(string code)
         {
-            return _patientManager.GetPatientById(id);
+            return _patientManager.GetPatientByCode(code);
         }
 
         // POST api/<PatientController>
@@ -54,17 +57,17 @@ namespace NewAppVS.Controllers
         }
 
         // PUT:api/<PatientController>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Patient value)
+        [HttpPut("{code}")]
+        public IActionResult Put(string code, [FromBody] Patient value)
         {
             try
             {
-                _patientManager.UpdatePatient(id, value);
+                _patientManager.UpdatePatient(code, value);
                 return Ok();
             }
             catch (KeyNotFoundException ex)
             {
-                Log.Error(ex, $"Patient with ID {id} not found.");
+                Log.Error(ex, $"Patient with ID {code} not found.");
                 return NotFound();
             }
             catch (Exception ex)
@@ -75,17 +78,17 @@ namespace NewAppVS.Controllers
         }
 
         // DELETE:api/<PatientController>/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{code}")]
+        public IActionResult Delete(string code)
         {
             try
             {
-                _patientManager.DeletePatient(id);
+                _patientManager.DeletePatient(code);
                 return Ok();
             }
             catch (KeyNotFoundException ex)
             {
-                Log.Error(ex, $"Patient with ID {id} not found.");
+                Log.Error(ex, $"Patient with ID {code} not found.");
                 return NotFound();
             }
             catch (Exception ex)
@@ -94,5 +97,6 @@ namespace NewAppVS.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
     }
 }

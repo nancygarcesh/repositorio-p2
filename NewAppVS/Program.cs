@@ -23,6 +23,7 @@ Log.Information("Initialize ");
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<PatientManager>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
